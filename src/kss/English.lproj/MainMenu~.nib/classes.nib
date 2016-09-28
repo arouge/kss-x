@@ -1,0 +1,23 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                displayAboutBox = id; 
+                displayDevices = id; 
+                displayMixer = id; 
+                displayPreferencesWindow = id; 
+                displaySecondWindow = id; 
+                miniPlayerDirectAccess = id; 
+                miniPlayerNext = id; 
+                miniPlayerOpenKSS = id; 
+                miniPlayerPrevious = id; 
+            }; 
+            CLASS = miniPlayer; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {"_firstWindow" = id; miniPlayerDirectAccessOutlet = id; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

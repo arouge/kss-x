@@ -1,0 +1,33 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = VLBrushedMetalImageView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
+        {CLASS = VLCControllerView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            ACTIONS = {
+                directAccess = id; 
+                masterVolume = id; 
+                next = id; 
+                nextTen = id; 
+                playListToggle = id; 
+                previous = id; 
+                previousTen = id; 
+                togglePause = id; 
+                volumeHigh = id; 
+                volumeLow = id; 
+            }; 
+            CLASS = kssPlayer; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                directAccessOutlet = id; 
+                masterVolumeOutlet = id; 
+                playButton = id; 
+                playTime = id; 
+                progressBarOutlet = id; 
+                songTitle = id; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}
