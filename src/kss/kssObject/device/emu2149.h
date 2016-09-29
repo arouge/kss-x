@@ -22,8 +22,6 @@ extern "C"
 {
 #endif
 
-	double testeur[3];
-	int resultat[3];
   typedef struct __PSG
   {
 
