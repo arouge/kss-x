@@ -47,10 +47,6 @@
 #include "emu2212.h"
 #include <math.h>
 
-#import <CoreMIDI/CoreMIDI.h>
-
-
-
 #define GETA_BITS 22
 
 static void
