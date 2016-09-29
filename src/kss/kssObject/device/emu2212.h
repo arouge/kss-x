@@ -57,8 +57,6 @@ typedef struct __SCC {
 
 } SCC ;
 
-	//int testing[5];
-	//int resulting[5];
 
 EMU2212_API SCC *SCC_new(e_uint32 c, e_uint32 r) ;
 EMU2212_API void SCC_reset(SCC *scc) ;
