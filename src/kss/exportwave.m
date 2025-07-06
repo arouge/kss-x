@@ -1,12 +1,12 @@
 #import "exportwave.h"
-#import "kssObject/libkss/kssplay.h"
+#import "kssplay.h"
 
 @implementation exportwave
 
 - (void)awakeFromNib
 {
 	exportKss = [[kssObject alloc] init];
-	frequency = [[exportKss frameRate] intValue];
+	frequency = (int)[exportKss frameRate];
     calculationTime=0;
 }
 
@@ -45,8 +45,8 @@
 	char fileNameC[256];
 	_isPlaying = YES;
     
-	kssplay = KSSPLAY_new(frequency, 2, 16,0) ;
-    
+	kssplay = KSSPLAY_new(frequency, 2, 16) ;
+
 	kssplay->opll_stereo = 1;
 	KSSPLAY_set_device_quality(kssplay,EDSC_PSG,YES);
 	KSSPLAY_set_device_quality(kssplay,EDSC_SCC,YES);
@@ -56,19 +56,19 @@
 	if([inheritDevicesOutlet intValue])
 	{
 		
-		psgVolume = [[exportKss getPsgVolume] intValue];
-		sccVolume = [[exportKss getSccVolume] intValue];
-		oplVolume = [[exportKss getOplVolume] intValue];
-		opllVolume = [[exportKss getOpllVolume] intValue];
-		masterVolume = [[exportKss getMasterVolume] intValue];
+		psgVolume = (int)[exportKss psgVolume];
+		sccVolume = (int)[exportKss sccVolume];
+		oplVolume = (int)[exportKss oplVolume];
+		opllVolume = (int)[exportKss opllVolume];
+		masterVolume = (int)[exportKss getMasterVolume];
 		
-		psgMask = [[exportKss getPsgMask] intValue];
-		sccMask = [[exportKss getSccMask] intValue];
-		oplMask = [[exportKss getOplMask] intValue];
-		opllMask = [[exportKss getOpllMask] intValue];
+		psgMask = (int)[exportKss psgMask];
+		sccMask = (int)[exportKss sccMask];
+		oplMask = (int)[exportKss oplMask];
+		opllMask = (int)[exportKss opllMask];
 		for(k=0;k<13;k++)
 		{
-			opllPan[k] = [[exportKss getOpllPan:[NSNumber numberWithInt:k]] intValue];
+			opllPan[k] = (int)[exportKss getOpllPan:k];
 		}
 	}
 	else
@@ -89,20 +89,18 @@
 	}
 	
     dispatch_async(dispatch_get_main_queue(),^ {
-    [progressbarOutlet setMaxValue:totalPlayTime];
+        [progressbarOutlet setMaxValue:totalPlayTime];
     });
   
+    //NSLog(@"Export débuté");
+
 	for(i=0;i<[m3uArray count];i++)
 	{
 		int j;
 		int k;
 		
 		short wavebuf[frequency*2];
-		
-//		[progressbarOutlet setDoubleValue:i+1];
-		
-		//tempObject = [m3uArray objectAtIndex:i];
-        
+
 		NSString *filePosition;
 		
 		filePosition = [[m3uArray objectAtIndex:i] valueForKey:@"fileLocation"];
@@ -186,6 +184,7 @@
         assert(audioErr == noErr);
         
         SInt64 position = 0;
+        // Ici on calcule le son d'un seul coup.
         
 		for(j=0;j<[[[m3uArray objectAtIndex:i] valueForKey:@"trackDuration"] intValue];j++)
 		{
@@ -202,13 +201,16 @@
             [progressbarOutlet setDoubleValue:calculationTime];
             });
 			// ici generer le wave et le sauver dans le fichier.
-			KSSPLAY_calc(kssplay, wavebuf, frequency) ;
+            KSSPLAY_calc(kssplay, wavebuf, frequency) ;
             
-            UInt32 ioNumBytes = sizeof(wavebuf);
+            UInt32 ioNumBytes = (UInt32)sizeof(wavebuf);
             
             audioErr = AudioFileWriteBytes(audioFile, false,  position, &ioNumBytes, wavebuf);
             position += frequency*4;
 		}
+     
+        
+      
 		audioErr= AudioFileClose(audioFile);
         
 		
@@ -218,7 +220,9 @@
 	[progressbarOutlet setDoubleValue:0];
     
 	_isPlaying = NO;
-	
+    
+    //NSLog(@"Export terminé");
+        
 	[cancelButtonOutlet setEnabled:NO];
 	[exportButtonOutlet setEnabled:YES];
     });

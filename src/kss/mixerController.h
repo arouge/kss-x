@@ -1,7 +1,7 @@
 /* mixerController */
 
 #import <Cocoa/Cocoa.h>
-#import "kssObject.h"
+#import "libKss.h"
 
 @interface mixerController : NSWindowController
 {

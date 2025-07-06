@@ -1,11 +1,9 @@
 /* miniPlayer */
 
 #import <Cocoa/Cocoa.h>
-#import "kssObject.h"
-//#import "AppleRemote.h"
+#import "libKss.h"
 #import "KSSDocument.h"
 
-//@class SMWSecondWindowController; // Forward declaration of our controller subclass
 @class preferencesController; // Forward declaration of our controller subclass
 @class devicesController; // Forward declaration of our controller subclass
 @class aboutWindow; // Forward declaration of our controller subclass
@@ -33,11 +31,9 @@
 #define oplVolumeKey  @"oplVolume"
 #define opllVolumeKey @"opllVolume"
 #define playTimeKey @"playTime"
-    
-	//AppleRemote *remoteControl;
 
 
-	//SMWSecondWindowController	*_controller; 	// This will point to our window controller subclass
+
 	preferencesController		*_prefController; 	// This will point to our window controller subclass
 	exportwave					*_exportwave;
 	devicesController			*_devController;
@@ -47,12 +43,9 @@
 	psgMidi                     *_psgMidi;
     sccMidi                     *_sccMidi;
     opllMidi                    *_opllMidi;
-    
-    //IBOutlet NSWindow * _firstWindow;		// This outlet points to the window so we can easily set it's order.
-	
+    	
 	kssObject *myKSS;
 
-	//IBOutlet id miniPlayerDirectAccessOutlet;
 }
 
 - (IBAction)volumeHigh:(id)sender;

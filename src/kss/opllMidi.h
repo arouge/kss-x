@@ -2,17 +2,34 @@
 //  opllMidi.h
 //  kss
 //
-//  Created by Alex Rouge on 21/08/15.
+//  Created by Alex Rouge on 22/09/15.
 //
 //
 
 #import <Cocoa/Cocoa.h>
-#import "kssObject.h"
+#import "libKss.h"
 #import "AUDIOToolbox.h"
 #import <CoreMIDI/MIDIServices.h>
 
 @interface opllMidi : NSWindowController
 {
+    
+    IBOutlet id opllVolumesMatrix;
+    IBOutlet id opllChannelsMatrix;
+    IBOutlet id opllProgramMatrix;
+    IBOutlet id opllLowThersholdMatrix;
+    IBOutlet id opllHighThersholdMatrix;
+    IBOutlet id opllLevelIndicatorMatrix;
+    IBOutlet id opllEnabledMatrix;
+    IBOutlet id opllLowTextMatrix;
+    IBOutlet id opllHighTextMatrix;
+    IBOutlet id opllInstrumentsMatrix;
+    
+    int mt32SoundMap[16];
+    int gmSoundTable[16];
+    
+    IBOutlet id opllMidiPortsMatrix;
+    
     kssObject *opllMidiKss;
     AUDIOToolbox *myAudioToolBox;
     
@@ -24,14 +41,8 @@
     
     MIDIPortRef myMidiOutputPort;
     MIDITimeStamp timeStamp;
-
-    IBOutlet id opllMidiPortsMatrix;
-    IBOutlet id opllChannelsMatrix;
-    IBOutlet id opllInstrumentsMatrix;
-
-    IBOutlet id opllEnabledMatrix;
-    int mt32SoundMap[16];
-    int gmSoundTable[16];
+    
+    NSNotificationCenter *nc;
     
     int opllNotes[9];
     int lastOpllNotes[9];
@@ -43,9 +54,9 @@
     int lastMidiProgram[9];
     int opllInstruments[9];
     int lastOpllInstruments[9];
-    
-    BOOL opllChannelEnabled[9];
-    BOOL lastOpllChannelEnabled[9];
+
+    int opllChannelEnabled[9];
+    int lastOpllChannelEnabled[9];
     
     int opllMidiPorts[9];
     int lastOpllMidiPorts[9];
@@ -55,9 +66,16 @@
     
     int opllLowThersholds[9];
     int opllHighThersholds[9];
-    
     IBOutlet id opllRegMatrix;
+
+    
 }
+
 -(IBAction)setMidiPort:(id)sender;
--(IBAction)enableChannel:(id)sender;
+-(void)scanMidiPorts;
+- (IBAction)rescanMidiPorts:(id)sender;
+-(IBAction)resetThersholdValues:(id)sender;
+-(IBAction)panic:(id)sender;
+- (OSStatus)sendMidiPacket:(Byte *)packet opllChannel:(int)channel size:(int)size;
+
 @end

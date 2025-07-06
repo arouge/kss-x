@@ -4,28 +4,27 @@
 
 -(void)updateVolumes
 {
-	[masterVolume setIntValue:[[mixerKss masterVolume] intValue]];
-	[psgVolume setIntValue:[[mixerKss psgVolume] intValue]];
-	[sccVolume setIntValue:[[mixerKss sccVolume] intValue]];
-	[oplVolume setIntValue:[[mixerKss oplVolume] intValue]];
-	[opllVolume setIntValue:[[mixerKss opllVolume] intValue]];
+	[masterVolume setIntValue:(int)[mixerKss masterVolume]];
+	[psgVolume setIntValue:(int)[mixerKss psgVolume]];
+	[sccVolume setIntValue:(int)[mixerKss sccVolume]];
+	[oplVolume setIntValue:(int)[mixerKss oplVolume]];
+	[opllVolume setIntValue:(int)[mixerKss opllVolume]];
 	
-	[masterVolumeValue setIntValue:[[mixerKss masterVolume] intValue]];
-	[psgVolumeValue setIntValue:[[mixerKss psgVolume] intValue]];
-	[sccVolumeValue setIntValue:[[mixerKss sccVolume] intValue]];
-	[oplVolumeValue setIntValue:[[mixerKss oplVolume] intValue]];
-	[opllVolumeValue setIntValue:[[mixerKss opllVolume] intValue]];
+	[masterVolumeValue setIntValue:(int)[mixerKss masterVolume]];
+	[psgVolumeValue setIntValue:(int)[mixerKss psgVolume]];
+	[sccVolumeValue setIntValue:(int)[mixerKss sccVolume]];
+	[oplVolumeValue setIntValue:(int)[mixerKss oplVolume]];
+	[opllVolumeValue setIntValue:(int)[mixerKss opllVolume]];
 }
 
 - (IBAction)resetVolumes:(id)sender
 {	
-	NSNumber *zero = [NSNumber numberWithInt:0];
 	
-	[mixerKss changeMasterVolume:zero];
-	[mixerKss changePsgVolume:zero];
-	[mixerKss changeSccVolume:zero];
-	[mixerKss changeOplVolume:zero];
-	[mixerKss changeOpllVolume:zero];
+	[mixerKss changeMasterVolume:0];
+	[mixerKss changePsgVolume:0];
+	[mixerKss changeSccVolume:0];
+	[mixerKss changeOplVolume:0];
+	[mixerKss changeOpllVolume:0];
 		
     [self updateVolumes];
 }
@@ -44,31 +43,31 @@
 
 - (IBAction)changeMasterVolume:(id)sender
 {
-	[mixerKss changeMasterVolume:[NSNumber numberWithInt:[sender intValue]]];
+	[mixerKss changeMasterVolume:[sender intValue]];
 	[masterVolumeValue setIntValue:[sender intValue]];
 }
 
 - (IBAction)changeOpllVolume:(id)sender
 {
-	[mixerKss changeOpllVolume:[NSNumber numberWithInt:[sender intValue]]];
+	[mixerKss changeOpllVolume:[sender intValue]];
 	[opllVolumeValue setIntValue:[sender intValue]];
 }
 
 - (IBAction)changeOplVolume:(id)sender
 {
-	[mixerKss changeOplVolume:[NSNumber numberWithInt:[sender intValue]]];
+	[mixerKss changeOplVolume:[sender intValue]];
 	[oplVolumeValue setIntValue:[sender intValue]];	
 }
 
 - (IBAction)changePsgVolume:(id)sender
 {
-	[mixerKss changePsgVolume:[NSNumber numberWithInt:[sender intValue]]];
+	[mixerKss changePsgVolume:[sender intValue]];
 	[psgVolumeValue setIntValue:[sender intValue]];
 }
 
 - (IBAction)changeSccVolume:(id)sender
 {
-	[mixerKss changeSccVolume:[NSNumber numberWithInt:[sender intValue]]];
+	[mixerKss changeSccVolume:[sender intValue]];
 	[sccVolumeValue setIntValue:[sender intValue]];
 }
 
@@ -78,12 +77,12 @@
 	{
 		[oplVolume setEnabled:0];
 		tempOplVolume = [oplVolume intValue];
-		[mixerKss changeOplVolume:[NSNumber numberWithInt:-255]];
+		[mixerKss changeOplVolume:-255];
 	}
 	else
 	{
 		[oplVolume setEnabled:1];
-		[mixerKss changeOplVolume:[NSNumber numberWithInt:tempOplVolume]];
+		[mixerKss changeOplVolume:tempOplVolume];
 	}
 }
 
@@ -93,12 +92,12 @@
 	{
 		[opllVolume setEnabled:0];
 		tempOpllVolume = [opllVolume intValue];
-		[mixerKss changeOpllVolume:[NSNumber numberWithInt:-255]];
+		[mixerKss changeOpllVolume:-255];
 	}
 	else
 	{
 		[opllVolume setEnabled:1];
-		[mixerKss changeOpllVolume:[NSNumber numberWithInt:tempOpllVolume]];
+		[mixerKss changeOpllVolume:tempOpllVolume];
 	}
 }
 
@@ -108,12 +107,12 @@
 	{
 		[psgVolume setEnabled:0];
 		tempPsgVolume = [psgVolume intValue];
-		[mixerKss changePsgVolume:[NSNumber numberWithInt:-255]];
+		[mixerKss changePsgVolume:-255];
 	}
 	else
 	{
 		[psgVolume setEnabled:1];
-		[mixerKss changePsgVolume:[NSNumber numberWithInt:tempPsgVolume]];
+		[mixerKss changePsgVolume:tempPsgVolume];
 	}
 }
 
@@ -123,18 +122,18 @@
 	{
 		[sccVolume setEnabled:0];
 		tempSccVolume = [sccVolume intValue];
-		[mixerKss changeSccVolume:[NSNumber numberWithInt:-255]];
+		[mixerKss changeSccVolume:-255];
 	}
 	else
 	{
 		[sccVolume setEnabled:1];
-		[mixerKss changeSccVolume:[NSNumber numberWithInt:tempSccVolume]];
+		[mixerKss changeSccVolume:tempSccVolume];
 	}
 }
 
 - (IBAction)panPsg:(id)sender
 {
-	[mixerKss setPsgPan:[NSNumber numberWithInt:1]];
+	[mixerKss setPsgPan:1];
 	printf("test\n");
 }
 

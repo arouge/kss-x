@@ -11,7 +11,6 @@
 
 @implementation mainMenu
 
-
 - (int) aleatoire:(int)min maximum:(int)max
 {
     int value;
@@ -19,23 +18,22 @@
     do
     {
         t1=clock();
-        value=rand()*t1/10000000;
+        value=(int)rand()*t1/10000000;
     }while (value < min || value > max);
     return value;    
 }
-
 
 - (IBAction)volumeLow:(id)sender
 {
 	NSNotificationCenter *nc;
 
-	if([[myKSS masterVolume] intValue]<=-255)
+	if([myKSS masterVolume]<=-255)
 	{
-		[myKSS changeMasterVolume:[NSNumber numberWithInt:-255]];
+		[myKSS changeMasterVolume:-255];
 	}
 	else
 	{	
-		[myKSS changeMasterVolume:[NSNumber numberWithInt:[[myKSS masterVolume] intValue]-5]];
+		[myKSS changeMasterVolume: [myKSS masterVolume]-5];
 	}
 	
 	nc = [NSNotificationCenter defaultCenter];
@@ -46,36 +44,26 @@
 {
 	NSNotificationCenter *nc;
 
-	if([[myKSS masterVolume] intValue]>=50)
+	if([myKSS masterVolume]>=50)
 	{
-		[myKSS changeMasterVolume:[NSNumber numberWithInt:50]];
+		[myKSS changeMasterVolume:50];
 	}
 	else
 	{	
-		[myKSS changeMasterVolume:[NSNumber numberWithInt:[[myKSS masterVolume] intValue]+5]];
+		[myKSS changeMasterVolume:[myKSS masterVolume]+5];
 	}
 	
 	nc = [NSNotificationCenter defaultCenter];
 	[nc postNotificationName:@"songFileChanged" object:nil];
 }
-/*
-- (void)keyDown: (NSEvent *)event
-{
-	NSString *input = [event characters];
-	char test;
-	test = [input characterAtIndex:0];
-	
-	if(test == 3)[self miniPlayerNext:self];
-	if(test == 2)[self miniPlayerPrevious:self];
-}
-*/
+
 - (IBAction)miniPlayerNextTen:(id)sender
 {
 }
 
 - (IBAction)miniPlayerPreviousTen:(id)sender
 {
-	[myKSS setSongNumber:[NSNumber numberWithInt:[[myKSS songNumber] intValue]-10]];
+	[myKSS setSongNumber:[myKSS songNumber]-10];
 }
 
 -(IBAction)replaySong:(id)sender
@@ -91,49 +79,57 @@
 - (void)awakeFromNib
 {
 	NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-	NSString *prefVdpSpeed = [defaults stringForKey:vdpKey];
-	NSString *prefFramRate = [defaults stringForKey:frameRateKey];
-	NSString *prefBufferSize = [defaults stringForKey:bufferKey];
-	NSString *prefCpuSpeed = [defaults stringForKey:cpuKey];
-	NSString *prefMasterVolume = [defaults stringForKey:masterVolumeKey];
-	NSString *psgVolume = [defaults stringForKey:psgVolumeKey];
-	NSString *sccVolume = [defaults stringForKey:sccVolumeKey];
-	NSString *oplVolume = [defaults stringForKey:oplVolumeKey];
-	NSString *opllVolume = [defaults stringForKey:opllVolumeKey];
-	NSString *defaultPlayTime = [defaults stringForKey:playTimeKey];
-    
-	if (prefVdpSpeed == nil) prefVdpSpeed = @"0";
-	[defaults setObject:prefVdpSpeed forKey:vdpKey];
+    NSInteger prefVdpSpeed = [defaults integerForKey:vdpKey];
+    NSInteger prefFramRate = [defaults integerForKey:frameRateKey];
+    NSInteger prefBufferSize = [defaults integerForKey:bufferKey];
+    NSInteger prefCpuSpeed = [defaults integerForKey:cpuKey];
+    NSInteger prefMasterVolume = [defaults integerForKey:masterVolumeKey];
+    NSInteger psgVolume = [defaults integerForKey:psgVolumeKey];
+    NSInteger sccVolume = [defaults integerForKey:sccVolumeKey];
+    NSInteger oplVolume = [defaults integerForKey:oplVolumeKey];
+    NSInteger opllVolume = [defaults integerForKey:opllVolumeKey];
+    NSInteger defaultPlayTime = [defaults integerForKey:playTimeKey];
+    NSInteger prefPsgMask = [defaults integerForKey:@"psgMask"];
+    NSInteger prefSccMask = [defaults integerForKey:@"sccMask"];
+    NSInteger prefOplMask = [defaults integerForKey:@"oplMask"];
+    NSInteger prefOpllMask = [defaults integerForKey:@"opllMask"];
+
+	if (!prefVdpSpeed) prefVdpSpeed = 0;
+	[defaults setInteger:prefVdpSpeed forKey:vdpKey];
 	 
-	if (prefFramRate == nil) prefFramRate = @"44100";
-	[defaults setObject:prefFramRate forKey:frameRateKey];
+	if (!prefFramRate) prefFramRate = 44100;
+	[defaults setInteger:prefFramRate forKey:frameRateKey];
 
-	if (prefBufferSize == nil) prefBufferSize = @"8";
-	[defaults setObject:prefBufferSize forKey:bufferKey];
+	if (!prefBufferSize) prefBufferSize = 8;
+	[defaults setInteger:prefBufferSize forKey:bufferKey];
 	
 	
-	if (prefCpuSpeed == nil) prefCpuSpeed = @"0";
-	[defaults setObject:prefCpuSpeed forKey:cpuKey];
+	if (!prefCpuSpeed) prefCpuSpeed = 0;
+	[defaults setInteger:prefCpuSpeed forKey:cpuKey];
 
-	if (prefMasterVolume == nil)  prefMasterVolume = @"0";
-	[defaults setObject:prefMasterVolume forKey:masterVolumeKey];
+	if (!prefMasterVolume)  prefMasterVolume = 0;
+	[defaults setInteger:prefMasterVolume forKey:masterVolumeKey];
 	
-	if (psgVolume == nil)  psgVolume = @"0";
-	[defaults setObject:psgVolume forKey:psgVolumeKey];
+	if (!psgVolume)  psgVolume = 0;
+	[defaults setInteger:psgVolume forKey:psgVolumeKey];
 	
-	if (sccVolume == nil)  sccVolume = @"0";
-	[defaults setObject:sccVolume forKey:sccVolumeKey];
+	if (!sccVolume)  sccVolume = 0;
+	[defaults setInteger:sccVolume forKey:sccVolumeKey];
 	
-	if (oplVolume == nil)  oplVolume = @"0";
-	[defaults setObject:oplVolume forKey:oplVolumeKey];
+	if (!oplVolume)  oplVolume = 0;
+	[defaults setInteger:oplVolume forKey:oplVolumeKey];
 	
-	if (opllVolume == nil)  opllVolume = @"0";
-	[defaults setObject:opllVolume forKey:opllVolumeKey];
+	if (!opllVolume)  opllVolume = 0;
+	[defaults setInteger:opllVolume forKey:opllVolumeKey];
     
-    if (defaultPlayTime == nil)  defaultPlayTime = @"90";
-    [defaults setObject:defaultPlayTime forKey:playTimeKey];
+    if (!defaultPlayTime)  defaultPlayTime = 90;
+    [defaults setInteger:defaultPlayTime forKey:playTimeKey];
     
-	
+    [defaults setInteger:prefPsgMask forKey:@"psgMask"];
+    [defaults setInteger:prefSccMask forKey:@"sccMask"];
+    [defaults setInteger:prefOplMask forKey:@"oplMask"];
+    [defaults setInteger:prefOpllMask forKey:@"opllMask"];
+
 	//remoteControl = [[AppleRemote alloc] initWithDelegate: self];
 
 	//[remoteControl startListening: self];
@@ -142,21 +138,24 @@
 	
 	[myKSS createAudio]; // Create Audio Stuff.
 
-	[myKSS setSongNumber:[NSNumber numberWithInt:0]];
-	[myKSS setVdpSpeed:[NSNumber numberWithInt:[prefVdpSpeed intValue]]];
+	[myKSS setSongNumber:0];
+	[myKSS setVdpSpeed:prefVdpSpeed];
 
-    [myKSS setFrameRate:[NSNumber numberWithInt:44100]];
-    [myKSS setBufferSize:[NSNumber numberWithInt:735]];
+    [myKSS setFrameRate:44100];
+    [myKSS setBufferSize:735];
 
-    [myKSS setCpuSpeed:[NSNumber numberWithInt:[prefCpuSpeed intValue]]];
-    [myKSS setDefaultPlayTime:[NSNumber numberWithInt:[defaultPlayTime intValue]]];
+    [myKSS setCpuSpeed:prefCpuSpeed];
+    [myKSS setDefaultPlayTime:defaultPlayTime];
     
-	[myKSS changeMasterVolume:[NSNumber numberWithInt:[prefMasterVolume intValue]]];
-	[myKSS changePsgVolume:[NSNumber numberWithInt:[psgVolume intValue]]];
-	[myKSS changeSccVolume:[NSNumber numberWithInt:[sccVolume intValue]]];	
-	[myKSS changeOplVolume:[NSNumber numberWithInt:[oplVolume intValue]]];
-	[myKSS changeOpllVolume:[NSNumber numberWithInt:[opllVolume intValue]]];
-	
+	[myKSS changeMasterVolume:prefMasterVolume];
+	[myKSS changePsgVolume:psgVolume];
+	[myKSS changeSccVolume:sccVolume];
+	[myKSS changeOplVolume:oplVolume];
+	[myKSS changeOpllVolume:opllVolume];
+    [myKSS setPsgMask:prefPsgMask];
+    [myKSS setSccMask:prefSccMask];
+    [myKSS setOplMask:prefOplMask];
+    [myKSS setOpllMask:prefOpllMask];
 	[myKSS pause];
 	
 	[self displayPlayer:self];
@@ -187,19 +186,19 @@
 {
     dispatch_async(dispatch_get_main_queue(),^ {
 
-	if (_psgMidi == nil)
-    {
-        _psgMidi = [[psgMidi alloc] initWithWindowNibName:@"psgMidi"];
-    }
-	
-	if([[_psgMidi window] isVisible])
-	{ 
-		[[_psgMidi window] close];
-	}
-	else
-	{
-		[_psgMidi showWindow:self];
-	}
+        if (_psgMidi == nil)
+        {
+            _psgMidi = [[psgMidi alloc] initWithWindowNibName:@"psgMidi"];
+        }
+        
+        if([[_psgMidi window] isVisible])
+        {
+            [[_psgMidi window] close];
+        }
+        else
+        {
+            [_psgMidi showWindow:self];
+        }
     });
 }
 
@@ -238,21 +237,26 @@
 
 - (IBAction)displayPlayer:(id)sender
 {
-    dispatch_async(dispatch_get_main_queue(),^ {
-    if (_playerController == nil)
+    dispatch_async(dispatch_get_main_queue(),^
     {
-        _playerController = [[kssPlayer alloc] initWithWindowNibName:@"kssPlayer"];
-		[[_playerController window] close];
-    }
-	if([[_playerController window] isVisible])
-	{ 
-		[[_playerController window] close];
-	}
-	else
-	{
-		[_playerController showWindow:self];
-	}
+        if (_playerController == nil)
+        {
+            _playerController = [[kssPlayer alloc] initWithWindowNibName:@"kssPlayer"];
+            [myKSS  setPlayerAddress:_playerController];
+
+            [[_playerController window] close];
+        }
+        if([[_playerController window] isVisible])
+        {
+            [[_playerController window] close];
+        }
+        else
+        {
+            [_playerController showWindow:self];
+        }
     });
+    
+
 }
 
 - (IBAction)displayMixer:(id)sender
@@ -333,7 +337,9 @@
 }
 
 - (BOOL)application:NSApp openFile:(NSString *)filename {
-    // NSLog(@"{openFile}  Hello Ric!");
+    [myKSS setm3uFileLocation:filename type:[filename pathExtension]];
+    [_playerController openFile];
+    
      return TRUE;
 }
 	

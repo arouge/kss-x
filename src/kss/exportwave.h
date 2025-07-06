@@ -1,12 +1,11 @@
 /* exportwave */
 
 #import <Cocoa/Cocoa.h>
-#import <AUDIOToolbox.h>
-#import "kssObject/libkss/kssplay.h"
-#import "kssObject.h"
+#import "AUDIOToolbox.h"
+#import "kssplay.h"
+#import "libKss.h"
 #import "m3uParser.h"
 
-int frequency;
 
 @interface exportwave : NSWindowController
 {
@@ -36,7 +35,8 @@ int frequency;
 	int psgVolume, sccVolume, oplVolume, opllVolume, masterVolume;
 	int psgMask, sccMask, oplMask, opllMask;
     int totalPlayTime, calculationTime;
-	
+    int frequency;
+
 }
 - (IBAction)cancelExport:(id)sender;
 - (IBAction)exportAsWave:(id)sender;

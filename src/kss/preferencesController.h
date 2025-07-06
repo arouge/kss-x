@@ -1,7 +1,7 @@
 /* preferencesController */
 
 #import <Cocoa/Cocoa.h>
-#import "kssObject.h"
+#import "libKss.h"
 #import "AUDIOToolbox.h"
 
 @interface preferencesController : NSWindowController

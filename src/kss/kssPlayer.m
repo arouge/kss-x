@@ -20,18 +20,17 @@
 {	
 	NSString *myTime;
 
-//	m3uObject *tempObject;
-//	tempObject = [m3uArray objectAtIndex:[playListTableView selectedRow]];
-	selectedPlayListItem = [playListTableView selectedRow];
-	if(![[playerKSS kssFile] isEqual:[[m3uArray objectAtIndex:selectedPlayListItem] objectForKey:@"fileLocation"]])	
+	selectedPlayListItem = (int)[playListTableView selectedRow];
+    
+	if(![[playerKSS kssFile] isEqual:[[m3uArray objectAtIndex:selectedPlayListItem] objectForKey:@"fileLocation"]])
 	{
 		if([playerKSS setKssFile:[[m3uArray objectAtIndex:selectedPlayListItem] objectForKey:@"fileLocation"]])
 		{
-			if(![[playerKSS fileOpen] intValue])
+			if(![playerKSS fileOpen])
 			{
-				[playerKSS setFileOpen:[NSNumber numberWithInt:1]];	
+				[playerKSS setFileOpen:1];
 
-				[playerKSS setSongNumber:[NSNumber numberWithInt:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]]];
+				[playerKSS setSongNumber:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]];
 				[playerKSS setSongTime:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackDuration"] intValue]];
 				 
 	//			 [[tempObject duration] intValue]];
@@ -48,32 +47,18 @@
 				[playButton setImage:[NSImage imageNamed:@"pause"]];
 				[playButton setAlternateImage:[NSImage imageNamed:@"pause_blue"]];
 
-				[playerKSS setSongNumber:[NSNumber numberWithInt:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]]];
+				[playerKSS setSongNumber:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]];
 			}
 
 		}
-        /*
-		else
-		{
-			int choice;
-			[playerKSS setFileOpen:[NSNumber numberWithInt:0]];
-            choice = NSRunAlertPanel(@"The entry is not valid !", @"Would you like to remove it from the list ?", @"Delete it", @"Keep it", nil);
-                        
-//            choice = NSRunAlertPanel(@"The entry is not valid !", @"Would you like to remove it from the list ?", @"Delete it", @"Keep it", nil);
-			if(choice==1)
-			{
-				[m3uArray removeObjectAtIndex:[playListTableView selectedRow]];
-			}
-
-		}
-         */
+        
 		[trackNameOutlet setStringValue:[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackTitle"]];
 		timeToChange = [[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackDuration"] intValue]; 
 
 	}
 	else
 	{
-		[playerKSS setSongNumber:[NSNumber numberWithInt:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]]];
+		[playerKSS setSongNumber:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]];
 		[playerKSS setSongTime:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackDuration"] intValue]];
 		[playerKSS setFadeOutTime:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackFadeOut"] intValue]];	
 		[playerKSS play];
@@ -102,78 +87,75 @@
 {
 	NSString *myTime;
 	
-	if([[playerKSS playTime] intValue] > 4000)
+	if([playerKSS playTime] > 4000)
 		[self onDoubleClick];
-	
-    myTime = [NSString stringWithFormat: @"%d:%02d:%02d",(int) ([[playerKSS playTime] intValue] / (60 * 60)),(int) ([[playerKSS playTime]intValue] / 60 % 60),(int) ([[playerKSS playTime]intValue] % 60)];
+    
+    myTime = [NSString stringWithFormat: @"%d:%02d:%02d",(int) ([playerKSS playTime] / (60 * 60)),(int) ([playerKSS playTime] / 60 % 60),(int) ([playerKSS playTime] % 60)];
 
 	
+    __block int respect;
 
-
-	[playTime setStringValue:myTime];
-	
+    dispatch_async(dispatch_get_main_queue(),^ {
+        respect = [respectTime intValue];
+        [playTime setStringValue:myTime];
+    });
+    
 	if([m3uArray count])
 	{
-	if(([[playerKSS playTime] intValue]>=[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackDuration"] intValue]) && (![respectTime intValue]))
+//        if(([playerKSS playTime]>=[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackDuration"] intValue]) && (![respectTime intValue]))
+
+	if(([playerKSS playTime]>=[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackDuration"] intValue]) && respect)
 	{
+        
 		NSIndexSet *myIndex;
 		
 		myTime = [NSString stringWithFormat: @"%d:%02d:%02d",(int) (0 / (60 * 60)),(int) (0 / 60 % 60),(int) (0 % 60)];
 
-		if([randomOutlet state])
-		{
-            
-			selectedPlayListItem = [self aleatoire:0 maximum:[m3uArray count]-1];
-			printf("%i\n", selectedPlayListItem);
+        dispatch_async(dispatch_get_main_queue(),^ {
+            if([randomOutlet state])
+            {
+                selectedPlayListItem = [self aleatoire:0 maximum:[m3uArray count]-1];
+            }
+            else
+            {
+                selectedPlayListItem++;
+                if(selectedPlayListItem  >= [m3uArray count])selectedPlayListItem=0;
+            }
+        });
 
-		}
-		else
-		{
-			selectedPlayListItem++;
-			if(selectedPlayListItem  >= [m3uArray count])selectedPlayListItem=0;
-		}
-
-//		tempObject = [m3uArray objectAtIndex:selectedPlayListItem];
 	
 		timeToChange = [[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackDuration"] intValue];//[tempObject intDuration];
-		myIndex = [NSIndexSet indexSetWithIndex:selectedPlayListItem];
+		myIndex = [NSIndexSet indexSetWithIndex:selectedPlayListItem+1];
 	
-		[playListTableView selectRowIndexes:myIndex byExtendingSelection:0];
-	
+        dispatch_async(dispatch_get_main_queue(),^ {
+            [playListTableView selectRowIndexes:myIndex byExtendingSelection:0];
+        });
+        
 		if([playerKSS setKssFile:[[m3uArray objectAtIndex:selectedPlayListItem] objectForKey:@"fileLocation"]])
 		{
-			if(![[playerKSS fileOpen] intValue])
+			if(![playerKSS fileOpen])
 			{
-				[playerKSS setFileOpen:[NSNumber numberWithInt:1]];	
+				[playerKSS setFileOpen:1];
 
 				[playerKSS updateKss:1];
-				[playerKSS setSongNumber:[NSNumber numberWithInt:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]]];
+				[playerKSS setSongNumber:[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"]];
 			}
 			else
 			{
-				[playerKSS setSongNumber:[NSNumber numberWithInt:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]]];
+				[playerKSS setSongNumber:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]];
 			}
-			
-			[trackNameOutlet setStringValue:[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackTitle"]];
-			timeToChange = [[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackDuration"] intValue];
-			
+            
+            dispatch_async(dispatch_get_main_queue(),^ {
+                [trackNameOutlet setStringValue:[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackTitle"]];
+                timeToChange = [[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackDuration"] intValue];
+			});
 		}
-		/*else
-		{
-			int choice;
-			[playerKSS setFileOpen:[NSNumber numberWithInt:0]];
-			choice = NSRunAlertPanel(@"The entry is not valid !", @"Would you like to remove it from the list ?", @"Delete it", @"Keep it", nil);
-			if(choice==1)
-			{
-				[m3uArray removeObjectAtIndex:[playListTableView selectedRow]];
-			}
-			
-		}
-         */
-		[playTime setStringValue:myTime];
-		[self updateImage];
 
+        dispatch_async(dispatch_get_main_queue(),^ {
+            [playTime setStringValue:myTime];
+        });
 	}
+
 	}
 	 
 }
@@ -208,24 +190,21 @@
 	[nc addObserver:self selector:@selector(updateProgressBar)
 			   name:@"timeChanged"
 			 object:nil];		
-
-	
+    
 	timeToChange = 60;
 	selectedPlayListItem = 0;
 
-	[playListTableView registerForDraggedTypes: [NSArray arrayWithObjects: @"NSGeneralPboardType", nil]];	
+	[playListTableView registerForDraggedTypes:[NSArray arrayWithObject: NSFilenamesPboardType] ];
+
 
 }
 
 -(IBAction)openM3u:(id)sender
 {
-	
-//	NSAutoreleasePool * localPool = [[NSAutoreleasePool alloc] init];
-
 	NSOpenPanel	*op = [NSOpenPanel openPanel];
 	
-	//if([op runModalForTypes: [NSArray arrayWithObjects: @"m3u",@"k3u",@"kss",@"mpk",@"opx",@"mgs",@"mbm", nil]])
-    [op setAllowedFileTypes:[NSArray arrayWithObjects: @"m3u",@"k3u",@"kss",@"mpk",@"opx",@"mgs",@"mbm", nil]];
+	[op setAllowedFileTypes:[NSArray arrayWithObjects: @"m3u",@"k3u",@"kss",@"mpk",@"opx",@"mgs",@"mbm",@"bgm",@"bgr", nil]];
+   
     if([op runModal])
 	{
 		NSURL *names;
@@ -234,11 +213,10 @@
 		names = [op URL];
 		filePath = [names path];
         
-        
 		[playerKSS setm3uFileLocation:filePath type:[filePath pathExtension]];
+        [playListTableView needsDisplay];
 		[self openFile];
 	}
-//	[localPool release];
 }
 
 - (NSMutableArray *)parseM3uFile:(NSString *)fileLocation
@@ -272,34 +250,34 @@
 	
 	if([[tempString pathExtension] isEqual:@"m3u"] || [[tempString pathExtension] isEqual:@"k3u"])
 	{
-
 		m3uArray = [self parseM3uFile:[playerKSS m3uFileLocation]];
-
-		[playListTableView reloadData];
-
-		NSIndexSet *myIndex;
-		
-		myIndex = [NSIndexSet indexSetWithIndex:0];
-		
-		[playListTableView selectRowIndexes:myIndex byExtendingSelection:NO];
-
-		[self onDoubleClick];
-
 	}
-	else if ([[tempString pathExtension] isEqual:@"kss"] || [[tempString pathExtension] isEqual:@"mgs"] || [[tempString pathExtension] isEqual:@"opx"] || [[tempString pathExtension] isEqual:@"mpk"] || [[tempString pathExtension] isEqual:@"mbm"])
+	else if ([[tempString pathExtension] isEqual:@"kss"] || [[tempString pathExtension] isEqual:@"mgs"] || [[tempString pathExtension] isEqual:@"opx"] || [[tempString pathExtension] isEqual:@"mpk"] || [[tempString pathExtension] isEqual:@"mbm"] || [[tempString pathExtension] isEqual:@"bgm"] || [[tempString pathExtension] isEqual:@"bgr"])
 	{
 		m3uArray = [self openKss];
-        [playListTableView reloadData];
+        
+    [playListTableView reloadData];
 
 		NSIndexSet *myIndex;
 		
 		myIndex = [NSIndexSet indexSetWithIndex:0];
 
 		[playListTableView selectRowIndexes:myIndex byExtendingSelection:NO];
-		
+        
 		[self onDoubleClick];
-		
 	}
+    [playListTableView reloadData];
+
+    NSIndexSet *myIndex;
+    myIndex = [NSIndexSet indexSetWithIndex:0];
+
+
+    dispatch_async(dispatch_get_main_queue(),^ {
+        [playListTableView selectRowIndexes:myIndex byExtendingSelection:NO];
+    });
+
+    selectedPlayListItem = 0;
+    [self onDoubleClick];
     
 //	[localPool release];
 	
@@ -309,17 +287,13 @@
 -(NSMutableArray *)openKss
 {
 	NSAutoreleasePool * localPool = [[NSAutoreleasePool alloc] init];
-
+    selectedPlayListItem=0;
 	NSString *kssFileLocation = [playerKSS m3uFileLocation];
 	int totalPlayTime;
 	NSArray *keys = [NSArray arrayWithObjects:@"fileActivated", @"fileLocation", @"fileType", @"trackNumber", @"trackTitle", @"trackDuration", @"trackLoopTime", @"trackFadeOut", nil];
 
 	totalPlayTime = 0;
 	
-	
-	//	NSString *fileType;
-	//NSString *kssDescription;
-	//NSString *kssTrackDuration;
 	int i=0;
 	
 	NSMutableArray *thePlayListArray;
@@ -327,10 +301,6 @@
 	thePlayListArray = [[NSMutableArray alloc] init];
 	
 	NSMutableDictionary *m3uDictionary;
-
-	//fileType = @"KSS";
-	//kssDescription = @"No name assigned !";
-	//kssTrackDuration = @"60";
 	
 	m3uArray = [[NSMutableArray alloc] init];	
 	
@@ -346,31 +316,30 @@
 		[splitedStrings addObject:@"KSS"];
 		[splitedStrings addObject:[NSNumber numberWithInt:i]];
 		[splitedStrings addObject:@"No title specified"];
-        [splitedStrings addObject:[playerKSS defaultPlayTime]];
+        [splitedStrings addObject:[NSNumber numberWithInt:[playerKSS defaultPlayTime]]];
 		[splitedStrings addObject:@"0"];
 		[splitedStrings addObject:@"0"];
 		
-		//m3uDictionary = [[NSMutableArray alloc] init];
 		m3uDictionary = [[NSMutableDictionary alloc] init];
 		
 		m3uDictionary = [NSMutableDictionary dictionaryWithObjects:splitedStrings forKeys:keys];
 		
 		[thePlayListArray addObject:m3uDictionary];
-		//[m3uDictionary release];
 		
 	}
 	[kssFileLocation release];
 	
+    [localPool release];
+
     return thePlayListArray;
 	
-	[localPool release];
 }
 
 
 
 -(void)updateVolumes
 {	
-	[masterVolumeOutlet setIntValue:[[playerKSS masterVolume] intValue]];
+	[masterVolumeOutlet setIntValue:[playerKSS masterVolume]];
 }
 -(void)updateImage
 {
@@ -393,8 +362,8 @@
 -(void)updateSongTitle
 {
 	[songTitle setStringValue:[[playerKSS kssFile]lastPathComponent]];
-	[directAccessOutlet setIntValue:[[playerKSS songNumber] intValue]];
-	[masterVolumeOutlet setIntValue:[[playerKSS masterVolume] intValue]];
+	[directAccessOutlet setIntValue:[playerKSS songNumber]];
+	[masterVolumeOutlet setIntValue:[playerKSS masterVolume]];
 	
 	//printf("%i\n",[[playerKSS size] intValue]);
 
@@ -403,7 +372,7 @@
 
 - (IBAction)masterVolume:(id)sender
 {
-	[playerKSS changeMasterVolume:[NSNumber numberWithInt:[sender intValue]]];
+	[playerKSS changeMasterVolume:[sender intValue]];
 }
 
 
@@ -414,7 +383,7 @@
 	
 //	m3uObject *tempObject;
 //	NSIndexSet *myIndex;
-	if([[playerKSS fileOpen] intValue])
+	if([playerKSS fileOpen])
 	{
 		NSIndexSet *myIndex;
 		
@@ -437,7 +406,7 @@
         
 		if([playerKSS setKssFile:[[m3uArray objectAtIndex:selectedPlayListItem] objectForKey:@"fileLocation"]])
 		{
-			[playerKSS setSongNumber:[NSNumber numberWithInt:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]]];
+			[playerKSS setSongNumber:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]];
 			 
 			[playerKSS setSongTime:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackDuration"] intValue]];
 //			//	 [[tempObject duration] intValue]];
@@ -470,17 +439,16 @@
 	NSString *myTime;
 	//m3uObject *tempObject;
 	NSIndexSet *myIndex;
-	if([[playerKSS fileOpen] intValue])
+	if([playerKSS fileOpen])
 	{
-		if([[playerKSS playTime] intValue] <=2)
+		if([playerKSS playTime] <=2)
 		{
 			selectedPlayListItem--;
 			if(selectedPlayListItem < 0)selectedPlayListItem = [m3uArray count]-1;
-		//	tempObject = [m3uArray objectAtIndex:selectedPlayListItem];
 	
 			if([playerKSS setKssFile:[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"fileLocation"]])
 			{
-				[playerKSS setSongNumber:[NSNumber numberWithInt:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]]];
+				[playerKSS setSongNumber:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]];
 				myIndex = [NSIndexSet indexSetWithIndex:selectedPlayListItem];
 	
 				[playListTableView selectRowIndexes:myIndex byExtendingSelection:0];
@@ -492,10 +460,8 @@
 		}
 		else
 		{
-		//	tempObject = [m3uArray objectAtIndex:selectedPlayListItem];
-			[playerKSS setSongNumber:[NSNumber numberWithInt:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]]];
+			[playerKSS setSongNumber:[[[m3uArray objectAtIndex:selectedPlayListItem] valueForKey:@"trackNumber"] intValue]];
 		}
-//		[self updateImage];
 	}
 	myTime = [NSString stringWithFormat: @"%d:%02d:%02d",(int) (0 / (60 * 60)),(int) (0 / 60 % 60),(int) (0 % 60)];
 	[playTime setStringValue:myTime];
@@ -527,21 +493,36 @@
 {
 	//NSString *shortFileName;
 
-	[playerKSS changeMasterVolume:[NSNumber numberWithInt:[masterVolumeOutlet intValue]+5]];
+	[playerKSS changeMasterVolume:[masterVolumeOutlet intValue]+5];
 	[masterVolumeOutlet setIntValue:[masterVolumeOutlet intValue]+5];
 }
 
 - (IBAction)volumeLow:(id)sender
 {
-	[playerKSS changeMasterVolume:[NSNumber numberWithInt:[masterVolumeOutlet intValue]-5]];
+	[playerKSS changeMasterVolume:[masterVolumeOutlet intValue]-5];
 	[masterVolumeOutlet setIntValue:[masterVolumeOutlet intValue]-5]; 
 }
 
--(int)numberOfRowsInTableView:(NSTableView *)aTableView
+-(NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
 	return [m3uArray count];
 }
 
+- (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes         toPasteboard:(NSPasteboard*)pboard
+{
+return YES;
+}
+
+- (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op
+{
+    return NSDragOperationCopy;
+}
+
+- (BOOL)tableView:(NSTableView *)aTableView acceptDrop:(id <NSDraggingInfo>)info
+          row:(int)row dropOperation:(NSTableViewDropOperation)operation
+{
+    return YES;
+}
 
 -(id)tableView:(NSTableView *)aTableView
 	objectValueForTableColumn:(NSTableColumn *)aTableColumn

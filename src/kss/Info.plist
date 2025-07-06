@@ -9,6 +9,52 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>bgr</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>kss-file.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>bin/bgr</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>bgr</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>KSSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>bgm</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>kss-file.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>bin/bgm</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>bgm</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>KSSDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string></string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
 				<string>k3u</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
@@ -35,12 +81,14 @@
 			<string>k3u-file.icns</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
-				<string>text/m3u</string>
+				<string>text/k3u</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>m3u</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -75,12 +123,14 @@
 			<string>kss-file.icns</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
-				<string>bin/kss</string>
+				<string>bin/mpk</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>mpk</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -95,12 +145,14 @@
 			<string>kss-file.icns</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
-				<string>bin/kss</string>
+				<string>bin/mgs</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>mgs</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -115,12 +167,14 @@
 			<string>kss-file.icns</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
-				<string>bin/kss</string>
+				<string>bin/opx</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>opx</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -135,12 +189,14 @@
 			<string>kss-file.icns</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
-				<string>bin/kss</string>
+				<string>bin/mbm</string>
 			</array>
 			<key>CFBundleTypeName</key>
 			<string>mbm</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -169,5 +225,7 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSRequiresAquaSystemAppearance</key>
+	<true/>
 </dict>
 </plist>

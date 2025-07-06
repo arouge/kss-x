@@ -1,7 +1,7 @@
 /* devicesController */
 
 #import <Cocoa/Cocoa.h>
-#import "kssObject.h"
+#import "libKss.h"
 
 @interface devicesController : NSWindowController
 {
@@ -17,10 +17,10 @@
     IBOutlet id devicesSccInvert;
 	
 	kssObject *devicesKss;
-	int psgMask;
-	int sccMask;
-	int oplMask;
-	int opllMask;
+	NSInteger psgMask;
+    NSInteger sccMask;
+    NSInteger oplMask;
+    NSInteger opllMask;
 }
 - (IBAction)devicesOplInvert:(id)sender;
 - (IBAction)devicesOpllInvert:(id)sender;

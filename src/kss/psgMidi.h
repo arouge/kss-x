@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "kssObject.h"
+#import "libKss.h"
 #import "AUDIOToolbox.h"
 #import <CoreMIDI/MIDIServices.h>
 
@@ -46,20 +46,20 @@
     int lastPsgVolumes[3];
     bool psgNoteOnOff[3];
     bool lastPsgNoteOnOff[3];
-    int midiProgram[3];
-    int lastMidiProgram[3];
+    NSInteger midiProgram[3];
+    NSInteger lastMidiProgram[3];
     
     int psgChannelEnabled[3];
     int lastPsgChannelEnabled[3];
     
-    int psgMidiPorts[3];
-    int lastPsgMidiPorts[3];
+    NSInteger psgMidiPorts[3];
+    NSInteger lastPsgMidiPorts[3];
     
-    int psgMidiChannels[3];
-    int lastPsgMidiChannels[3];
+    NSInteger psgMidiChannels[3];
+    NSInteger lastPsgMidiChannels[3];
     
-    int psgLowThersholds[3];
-    int psgHighThersholds[3];
+    NSInteger psgLowThersholds[3];
+    NSInteger psgHighThersholds[3];
     IBOutlet id psgRegisters;
 
 }

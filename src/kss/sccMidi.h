@@ -7,7 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "kssObject.h"
+#import "libKss.h"
 #import "AUDIOToolbox.h"
 #import <CoreMIDI/MIDIServices.h>
 
@@ -46,20 +46,20 @@
     int lastSccVolumes[5];
     bool sccNoteOnOff[5];
     bool lastSccNoteOnOff[5];
-    int midiProgram[5];
-    int lastMidiProgram[5];
+    NSInteger midiProgram[5];
+    NSInteger lastMidiProgram[5];
     
-    int sccChannelEnabled[5];
-    int lastSccChannelEnabled[5];
+    NSInteger sccChannelEnabled[5];
+    NSInteger lastSccChannelEnabled[5];
     
-    int sccMidiPorts[5];
-    int lastSccMidiPorts[5];
+    NSInteger sccMidiPorts[5];
+    NSInteger lastSccMidiPorts[5];
     
-    int sccMidiChannels[5];
-    int lastSccMidiChannels[5];
+    NSInteger sccMidiChannels[5];
+    NSInteger lastSccMidiChannels[5];
     
-    int sccLowThersholds[5];
-    int sccHighThersholds[5];
+    NSInteger sccLowThersholds[5];
+    NSInteger sccHighThersholds[5];
 }
 
 -(IBAction)setMidiPort:(id)sender;

@@ -47,7 +47,7 @@
 			
 			if([lineArray count] < 8)
 			{
-				for(int i=0;(i=(8-[lineArray count]));i++)
+				for(int i=0;(i=(int)(8-[lineArray count]));i++)
 					if(i == 5)
 						[lineArray replaceObjectAtIndex:5 withObject:[NSNumber numberWithInt:60]];
 				else 
@@ -56,7 +56,7 @@
 			}
 			if([lineArray count] > 8)
 			{
-				for(int i=0;(i=([lineArray count]-8));i++)
+				for(int i=0;(i=(int)([lineArray count]-8));i++)
 					[lineArray removeLastObject];
 			}
 			
@@ -78,7 +78,8 @@
 				[tempString release];
 			}
 			
-			[lineArray replaceObjectAtIndex:5 withObject:[[myAudioToolBox timeDecomp:[lineArray objectAtIndex:5]]stringValue]];
+        [lineArray replaceObjectAtIndex:5 withObject:[NSNumber numberWithInt:(int)[myAudioToolBox timeDecomp:[lineArray objectAtIndex:5]]]];
+         
 			
 			m3uDictionary = [NSMutableDictionary dictionaryWithObjects:lineArray forKeys:keys];
 			

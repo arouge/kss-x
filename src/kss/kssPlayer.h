@@ -2,14 +2,13 @@
 
 #import <Cocoa/Cocoa.h>
 #import "mainMenu.h"
-#import "kssObject.h"
+#import "libKss.h"
 //#import "m3uObject.h"
 #import "m3uParser.h"
 #import "AUDIOToolbox.h"
 
 @interface kssPlayer : NSWindowController
 {
-    NSDrawer *bottomDrawer;
 	NSDate *ourStartTime;
     AUDIOToolbox *myAudioToolBox;
 

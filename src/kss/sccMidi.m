@@ -79,8 +79,11 @@
         lastSccNotes[i] = sccNotes[i];
         lastSccNoteOnOff[i] = sccNoteOnOff[i];
         sccVolumes[i] = scc->volume[i] & 15;
-        sccMidiChannels[i] = [[sccChannelsMatrix cellAtRow:0 column:i] indexOfSelectedItem];
-        sccNotes[i] = [[myAudioToolBox convertFrequency:[NSNumber numberWithInt:scc->freq[i]] deviceName:EDSC_SCC] intValue];
+        dispatch_async(dispatch_get_main_queue(),^ {
+            sccMidiChannels[i] = [[sccChannelsMatrix cellAtRow:0 column:i] indexOfSelectedItem];
+        });
+        
+            sccNotes[i] = [[myAudioToolBox convertFrequency:[NSNumber numberWithInt:scc->freq[i]] deviceName:EDSC_SCC] intValue];
         midiProgram[i] = [[sccProgramMatrix cellAtRow:0 column:i] indexOfSelectedItem];
         sccMidiPorts[i] = [[sccMidiPortsMatrix cellAtRow:0 column:i] indexOfSelectedItem];
         
@@ -88,10 +91,10 @@
             [[sccVolumesMatrix cellAtRow:0 column:i] setIntValue:sccVolumes[i]];
             [[sccLevelIndicatorMatrix cellAtRow:0 column:i] setIntValue:sccVolumes[i]];
         });
-
-        if(sccVolumes[i] > [[sccHighTextMatrix cellAtRow:0 column:i] intValue])
-             dispatch_async(dispatch_get_main_queue(),^ {
-            [[sccHighTextMatrix cellAtRow:0 column:i] setIntValue:sccVolumes[i]];
+        
+        dispatch_async(dispatch_get_main_queue(),^ {
+            if(sccVolumes[i] > [[sccHighTextMatrix cellAtRow:0 column:i] intValue])
+                [[sccHighTextMatrix cellAtRow:0 column:i] setIntValue:sccVolumes[i]];
         });
         if(sccVolumes[i] < [[sccLowTextMatrix cellAtRow:0 column:i] intValue])
             dispatch_async(dispatch_get_main_queue(),^ {
@@ -117,11 +120,26 @@
             lastSccNotes[i] = sccNotes[i];
         }
         lastSccMidiPorts[i] = sccMidiPorts[i];
-        
+        dispatch_async(dispatch_get_main_queue(),^ {
         sccChannelEnabled[i] = [[sccEnabledMatrix cellAtRow:0 column:i] intValue];
+        });
+
+            
+        if(!sccChannelEnabled[i])
+        {
+            if(!lastSccNoteOnOff[i])
+            {
+                Byte noteOnOff[] = { 0x80+sccMidiChannels[i], lastSccNotes[i] ,0x40};
+                status = [self sendMidiPacket:noteOnOff sccChannel:i size:3];
+                                
+                lastSccNotes[i] = sccNotes[i];
+            }
+            continue;
+        }
+        
         sccLowThersholds[i] = [[sccLowThersholdMatrix cellAtRow:0 column:i] indexOfSelectedItem];
         sccHighThersholds[i] = [[sccHighThersholdMatrix cellAtRow:0 column:i] indexOfSelectedItem];
-        
+        /*
         if(!sccChannelEnabled[i] && !lastSccChannelEnabled[i])
         {
             Byte noteOff[] = {0x80+sccMidiChannels[i], lastSccNotes[i],0x40};
@@ -130,7 +148,7 @@
             lastSccNoteOnOff[i] = 0;
             lastSccVolumes[i] = 0;
         }
-        
+        */
         if(midiProgram[i] != lastMidiProgram[i])
         {
             Byte program[] = {0xC0+sccMidiChannels[i], midiProgram[i]};
@@ -192,7 +210,7 @@
 {
     OSStatus status;
 
-    myMidiClientRef = NULL;
+   // myMidiClientRef = NULL;
     
     if((status = MIDIClientCreate(CFSTR("Testing"), NULL, NULL, &myMidiClientRef)))
     {
@@ -215,7 +233,7 @@
     });
 
     
-    int numberOfDestination = MIDIGetNumberOfDestinations();
+    int numberOfDestination = (int)MIDIGetNumberOfDestinations();
     if(numberOfDestination)
     {
         for(int i=0;i<numberOfDestination;i++)
@@ -247,13 +265,16 @@
 
 - (void)windowWillClose:(NSNotification *)notification
 {
-    NSLog(@"blablabla");
+#ifdef RELEASE
+#else
+       // NSLog(@"blablabla");
+#endif
 }
 
 -(IBAction)setMidiPort:(id)sender
 {
-    int selectedColumn;
-    int selectedRow;
+    NSInteger selectedColumn;
+    NSInteger selectedRow;
     
     selectedRow = [sender selectedRow];
     selectedColumn = [sender selectedColumn];

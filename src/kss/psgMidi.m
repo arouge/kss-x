@@ -90,7 +90,10 @@
         lastPsgNotes[i] = psgNotes[i];
         lastPsgNoteOnOff[i] = psgNoteOnOff[i];
         psgVolumes[i] = psg->volume[i] & 31;
-        psgMidiChannels[i] = [[psgChannelsMatrix cellAtRow:0 column:i] indexOfSelectedItem];
+        dispatch_async(dispatch_get_main_queue(),^ {
+            psgMidiChannels[i] = [[psgChannelsMatrix cellAtRow:0 column:i] indexOfSelectedItem];
+        });
+        
         psgNotes[i] = [[myAudioToolBox convertFrequency:[NSNumber numberWithInt:psg->freq[i]] deviceName:EDSC_PSG] intValue];
         midiProgram[i] = [[psgProgramMatrix cellAtRow:0 column:i] indexOfSelectedItem];
         psgMidiPorts[i] = [[psgMidiPortsMatrix cellAtRow:0 column:i] indexOfSelectedItem];
@@ -128,11 +131,26 @@
             lastPsgNotes[i] = psgNotes[i];
         }
         lastPsgMidiPorts[i] = psgMidiPorts[i];
+        dispatch_async(dispatch_get_main_queue(),^ {
+            psgChannelEnabled[i] = [[psgEnabledMatrix cellAtRow:0 column:i] intValue];
+        });
         
-        psgChannelEnabled[i] = [[psgEnabledMatrix cellAtRow:0 column:i] intValue];
+        if(!psgChannelEnabled[i])
+        {
+            if(!lastPsgNoteOnOff[i])
+            {
+                Byte noteOnOff[] = { 0x80+psgMidiChannels[i], lastPsgNotes[i] ,0x40};
+                status = [self sendMidiPacket:noteOnOff psgChannel:i size:3];
+                                
+                lastPsgNotes[i] = psgNotes[i];
+            }
+            continue;
+        }
+        
         psgLowThersholds[i] = [[psgLowThersholdMatrix cellAtRow:0 column:i] indexOfSelectedItem];
         psgHighThersholds[i] = [[psgHighThersholdMatrix cellAtRow:0 column:i] indexOfSelectedItem];
         
+        /*
         if(!psgChannelEnabled[i] && !lastPsgChannelEnabled[i])
         {
             Byte noteOff[] = {0x80+psgMidiChannels[i], lastPsgNotes[i],0x40};
@@ -141,6 +159,7 @@
             lastPsgNoteOnOff[i] = 0;
             lastPsgVolumes[i] = 0;
         }
+        */
         
         if(midiProgram[i] != lastMidiProgram[i])
         {
@@ -204,7 +223,7 @@
 {
     OSStatus status;
     
-    myMidiClientRef = NULL;
+   // myMidiClientRef = NULL;
     
     if((status = MIDIClientCreate(CFSTR("Testing"), NULL, NULL, &myMidiClientRef)))
     {
@@ -227,7 +246,7 @@
     });
     
     
-    int numberOfDestination = MIDIGetNumberOfDestinations();
+    NSInteger numberOfDestination = MIDIGetNumberOfDestinations();
     if(numberOfDestination)
     {
         for(int i=0;i<numberOfDestination;i++)
@@ -264,8 +283,8 @@
 
 -(IBAction)setMidiPort:(id)sender
 {
-    int selectedColumn;
-    int selectedRow;
+    NSInteger selectedColumn;
+    NSInteger selectedRow;
     
     selectedRow = [sender selectedRow];
     selectedColumn = [sender selectedColumn];
